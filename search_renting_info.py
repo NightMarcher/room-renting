@@ -54,8 +54,8 @@ def for_renting_info(coordinate, radius=None, keywords=None):
 	return renting_info  
 
 if __name__ == '__main__':
-		address = input('address = ')
-		radius = input('radius = ')
-		keywords = input('keywords = ')
-		coordinate = for_center_coordinate(address)
-		renting_info = for_renting_info(coordinate, radius, keywords)
+	address = input('address = ')
+	radius = input('radius = ')
+	keywords = input('keywords = ')
+	coordinate = for_center_coordinate(address)
+	renting_info = for_renting_info(coordinate, radius, keywords)
