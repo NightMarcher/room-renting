@@ -1,0 +1,42 @@
+<!Doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+        <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+        <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.6&key=76c5d1845c83fc6d98043b499865da6f"></script>
+        <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+        <title>深圳租房大数据</title>
+        <style type="text/css">
+            body, html, #container{
+            width: 100%;
+            height: 100%;
+            margin: 3px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="container" tabindex="0" ></div>
+        
+        <!-- <iframe width='560px' height='440px' frameborder='0' scrolling='no' marginheight='0' marginwidth='0' src='https://yuntu.amap.com/share/3uYFZz'></iframe> -->
+
+        <script type="text/javascript">
+            var map = new AMap.Map("container",{
+                center: [114.05, 22.55] ,
+                zoom: 12,
+                viewMode: "3D",
+                pitch: 30
+            });
+            map.setMapStyle("amap://styles/dark");
+            map.plugin(["AMap.ToolBar", "AMap.Scale", "AMap.Geolocation", "AMap.OverView"],
+            function(){
+                map.addControl(new AMap.ToolBar());
+                map.addControl(new AMap.Scale());
+                map.addControl(new AMap.Geolocation());
+                map.addControl(new AMap.OverView({isOpen:true}));
+            });
+        </script>
+    </body>
+</html>
