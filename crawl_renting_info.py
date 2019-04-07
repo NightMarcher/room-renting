@@ -47,11 +47,12 @@ def scan_page():
 	df_base = pd.DataFrame()
 	while True:
 		page_num += 1
-		if page_num == 1:
+		if page_num == 1: # 首页和其他页url规则不一样
 			info_item_list = get_page_info(url)
 		else:
 			info_item_list = get_page_info('{}/fangyuan/p{}/'.format(url, page_num))
-		time.sleep(1)
+                
+		time.sleep(1) # 爬取过快容易被识别
 		if not info_item_list:
 			break
 		logger.info('Scanning Page {}'.format(page_num))
@@ -64,17 +65,20 @@ def scan_page():
 			df_base = df_base.append(df, ignore_index=True)
 			if df_base.shape[0] == 500:
 				file_num += 1
+                                # 爬取的数据批量写入csv文件
 				df_base.to_csv('./renting_info_{}.csv'.format(file_num), encoding='utf-8')
 				logger.info('renting_info_{}.csv created'.format(file_num))
 				df_base = pd.DataFrame()
 
 def get_page_info(url):
 	response = requests.get(url, headers=generate_headers())
+        # 使用BeautifulSoup解析网页
 	soup = bs(response.content, 'html.parser')
 	info_item_list = soup.body.find_all('div', class_='zu-itemmod')
 	return info_item_list
 
 def get_item_info(info_item):
+        # 获取租房信息
 	global _document_num
 	info_url = info_item['link']
 	title = info_item.a['title']
@@ -100,6 +104,7 @@ def get_item_info(info_item):
 	metro_line = additional_info[-1].string if len(additional_info) == 3 else 'Null'
 	price = int(info_item.find('div', class_='zu-side').p.strong.string)
 	price_unit = info_item.find('div', class_='zu-side').p.contents[-1].strip()
+        # 组装数据字典
 	document = {
 				'url': info_url,
 				'title': title,
@@ -119,6 +124,7 @@ def get_item_info(info_item):
 				'price_unit': price_unit,
 				'create_datetime': datetime.datetime.now()
 	}
+        # 存储到数据库
 	try:
 		col.insert_one(document)
 	except Exception as e:
@@ -130,10 +136,11 @@ def get_item_info(info_item):
 	return df
 
 if __name__ == '__main__':
+        # 连接数据库
 	client = pymongo.MongoClient()
-i	db = client['room_renting']
+	db = client['room_renting']
 	col = db['tcol']
-
+        # 配置日志系统
 	logger = logging.getLogger()
 	logger.setLevel(logging.INFO)
 	formatter = logging.Formatter('%(levelname)s %(asctime)s %(lineno)d %(message)s')
@@ -145,5 +152,5 @@ i	db = client['room_renting']
 	stream_handler.setFormatter(formatter)
 	logger.addHandler(file_handler)
 	logger.addHandler(stream_handler)
-	
-	# scan_page()
+        # 开始爬取
+	scan_page()

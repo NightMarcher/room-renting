@@ -14,7 +14,7 @@ def for_address():
 		address_list.append(address)
 		if len(address_list) == 10:
 			address_df = pd.DataFrame(address_list)
-			to_coordinate(address_df)
+			to_coordinate(address_df) # 地址转换为经纬度
 			time.sleep(1)
 			address_df = pd.DataFrame()
 			address_list.clear()
@@ -49,6 +49,7 @@ def to_coordinate(address_df):
 		# address_df.ix[index, '_district'] = item['district'].strip('区')
 		address_df.ix[index, 'coordinate'] = item['location']
 	address_df = address_df.dropna() 
+        # 经纬度回写数据库
 	for index, row in address_df.iterrows():
 		col.update({'_id': ObjectId(address_df.ix[index, 'id'])},
 					{'$set': {'coordinate': address_df.ix[index, 'coordinate']}})
@@ -71,4 +72,5 @@ if __name__ == '__main__':
 	logger.addHandler(file_handler)
 	logger.addHandler(stream_handler)
 	
-	# for_address()
+	for_address()
+
